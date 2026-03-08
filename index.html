@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arab Scholarship Alert - Soccer & Petroleum Engineering</title>
+    <meta name="description" content="Real-time scholarship alerts for soccer and petroleum engineering in Arab countries">
+    <meta name="author" content="Musa Talle Abdullahi">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .arabic-font { font-family: 'Cairo', sans-serif; }
+        
+        .gradient-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #059669, #0891b2);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .pulse-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        .bell-ring {
+            animation: ring 2s ease-in-out infinite;
+        }
+        @keyframes ring {
+            0%, 100% { transform: rotate(0); }
+            10% { transform: rotate(30deg); }
+            20% { transform: rotate(-28deg); }
+            30% { transform: rotate(34deg); }
+            40% { transform: rotate(-32deg); }
+            50% { transform: rotate(30deg); }
+            60% { transform: rotate(-28deg); }
+            70% { transform: rotate(34deg); }
+            80% { transform: rotate(-32deg); }
+            90% { transform: rotate(30deg); }
+        }
+
+        .floating-shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -50px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        /* Creator footer styling */
+        .creator-footer {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="gradient-bg text-white min-h-screen overflow-x-hidden">
+
+    <!-- Floating Background Elements -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+        <div class="floating-shape top-20 left-10 w-64 h-64 bg-emerald-500 rounded-full blur-3xl"></div>
+        <div class="floating-shape top-60 right-20 w-96 h-96 bg-cyan-500 rounded-full blur-3xl" style="animation-delay: -5s;"></div>
+        <div class="floating-shape bottom-20 left-1/3 w-80 h-80 bg-blue-500 rounded-full blur-3xl" style="animation-delay: -10s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight">ScholarTrack <span class="text-emerald-400">Arabia</span></h1>
+                        <p class="text-xs text-gray-400 arabic-font">منح دراسية عربية</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <button id="notificationBtn" class="relative p-2 hover:bg-white/10 rounded-full transition-colors">
+                        <i class="fas fa-bell text-xl text-gray-300"></i>
+                        <span id="notifBadge" class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-xs rounded-full flex items-center justify-center font-bold hidden">3</span>
+                    </button>
+                    <button class="md:hidden p-2 hover:bg-white/10 rounded-lg" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="fixed inset-0 z-40 bg-slate-900/95 backdrop-blur-xl transform translate-x-full transition-transform duration-300 md:hidden pt-20">
+        <div class="p-6 space-y-4">
+            <a href="#soccer" class="block p-4 glass-card rounded-xl text-lg font-semibold">⚽ Soccer Scholarships</a>
+            <a href="#petroleum" class="block p-4 glass-card rounded-xl text-lg font-semibold">🛢️ Petroleum Engineering</a>
+            <a href="#tracker" class="block p-4 glass-card rounded-xl text-lg font-semibold">🔔 My Tracker</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="relative z-10 pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+
+        <!-- Hero Section -->
+        <div class="text-center mb-16 space-y-6">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-sm font-medium mb-4">
+                <span class="w-2 h-2 bg-emerald-400 rounded-full pulse-dot"></span>
+                Live Monitoring Active
+            </div>
+            
+            <h2 class="text-4xl md:text-6xl font-bold leading-tight">
+                Never Miss a <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Scholarship</span><br>
+                Opportunity in Arab Countries
+            </h2>
+            
+            <p class="text-lg text-gray-300 max-w-2xl mx-auto">
+                Real-time alerts for soccer/football and petroleum engineering scholarships across UAE, Saudi Arabia, Qatar, Kuwait, and more.
+            </p>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mt-8">
+                <div class="glass-card rounded-xl p-4 text-center">
+                    <div class="text-2xl font-bold text-emerald-400" id="activeCount">12</div>
+                    <div class="text-xs text-gray-400">Active Now</div>
+                </div>
+                <div class="glass-card rounded-xl p-4 text-center">
+                    <div class="text-2xl font-bold text-cyan-400">8</div>
+                    <div class="text-xs text-gray-400">Countries</div>
+                </div>
+                <div class="glass-card rounded-xl p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-400">2</div>
+                    <div class="text-xs text-gray-400">Categories</div>
+                </div>
+                <div class="glass-card rounded-xl p-4 text-center">
+                    <div class="text-2xl font-bold text-purple-400">24h</div>
+                    <div class="text-xs text-gray-400">Update Cycle</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap justify-center gap-3 mb-12">
+            <button onclick="filterScholarships('all')" class="filter-btn active px-6 py-3 rounded-full bg-emerald-500 text-white font-semibold transition-all hover:scale-105 shadow-lg shadow-emerald-500/25" data-filter="all">
+                All Opportunities
+            </button>
+            <button onclick="filterScholarships('soccer')" class="filter-btn px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 font-semibold transition-all hover:scale-105" data-filter="soccer">
+                ⚽ Soccer/Football
+            </button>
+            <button onclick="filterScholarships('petroleum')" class="filter-btn px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 font-semibold transition-all hover:scale-105" data-filter="petroleum">
+                🛢️ Petroleum Engineering
+            </button>
+        </div>
+
+        <!-- Scholarship Grid -->
+        <div id="scholarshipGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            <!-- Cards will be populated by JavaScript -->
+        </div>
+
+        <!-- Alert Setup Section -->
+        <div class="glass-card rounded-2xl p-8 mb-16 border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                        <i class="fas fa-bell-concierge text-emerald-400"></i>
+                        Set Up Smart Alerts
+                    </h3>
+                    <p class="text-gray-300 mb-6">
+                        Get instant notifications when new scholarships matching your criteria are posted. Customize by country, degree level, and funding type.
+                    </p>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Email notifications</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Browser push notifications</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> WhatsApp alerts (optional)</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Deadline reminders</li>
+                    </ul>
+                </div>
+                
+                <form id="alertForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-gray-300">Email Address</label>
+                        <input type="email" required class="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-white/10 focus:border-emerald-500 focus:outline-none transition-colors text-white placeholder-gray-500" placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-gray-300">Category</label>
+                            <select class="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-white/10 focus:border-emerald-500 focus:outline-none text-white">
+                                <option>Both</option>
+                                <option>Soccer Only</option>
+                                <option>Petroleum Engineering Only</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-gray-300">Country Preference</label>
+                            <select class="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-white/10 focus:border-emerald-500 focus:outline-none text-white">
+                                <option>All Countries</option>
+                                <option>Saudi Arabia</option>
+                                <option>UAE</option>
+                                <option>Qatar</option>
+                                <option>Kuwait</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 font-bold text-white transition-all transform hover:scale-[1.02] shadow-lg shadow-emerald-500/25">
+                        Activate Alert System
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Data Sources & Trust -->
+        <div class="text-center mb-12">
+            <p class="text-sm text-gray-400 mb-4">Trusted Data Sources</p>
+            <div class="flex flex-wrap justify-center gap-6 opacity-60 grayscale hover:grayscale-0 transition-all">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-university text-2xl"></i>
+                    <span class="font-semibold">KFUPM</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-oil-well text-2xl"></i>
+                    <span class="font-semibold">ADNOC</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-graduation-cap text-2xl"></i>
+                    <span class="font-semibold">KAUST</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-futbol text-2xl"></i>
+                    <span class="font-semibold">Saudi Ministry of Sport</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- CREATOR FOOTER - Added Musa Talle Abdullahi -->
+    <footer class="creator-footer relative z-10 py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass-card rounded-2xl p-6 text-center">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                            MTA
+                        </div>
+                        <div class="text-left">
+                            <p class="text-sm text-gray-400">Created by</p>
+                            <h3 class="text-xl font-bold text-white">Musa Talle Abdullahi</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden md:block h-8 w-px bg-white/20"></div>
+                    
+                    <div class="flex items-center gap-4">
+                        <a href="https://wa.me/2349073056742" class="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 transition-all">
+                            <i class="fab fa-whatsapp"></i>
+                            <span class="text-sm font-medium">09073056742</span>
+                        </a>
+                        <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-400">
+                            <i class="fas fa-wallet"></i>
+                            <span class="text-sm font-medium">Opay: 9073056742</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-white/10">
+                    <p class="text-sm text-gray-400">
+                        © 2024 ScholarTrack Arabia. All rights reserved. | 
+                        <span class="text-emerald-400">Designed & Developed by Musa Talle Abdullahi</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <div class="glass-card rounded-xl p-4 border-l-4 border-emerald-500 flex items-center gap-3 shadow-2xl">
+            <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                <i class="fas fa-check text-emerald-400"></i>
+            </div>
+            <div>
+                <h4 class="font-semibold text-sm">Success</h4>
+                <p class="text-xs text-gray-400" id="toastMessage">Alert system activated!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Scholarship Database
+        const scholarships = [
+            {
+                id: 1,
+                title: "Saudi Scholarship for Developing Football Talent (Future Falcons)",
+                category: "soccer",
+                country: "Saudi Arabia",
+                type: "Full Funding",
+                degree: "Training Program",
+                deadline: "Rolling Admissions",
+                description: "Overseen by Ministry of Sport. Targets talented football players aged 18-20 for technical, physical, and psychological training in Spain.",
+                link: "https://saudipedia.com/en/saudi-scholarship-program-for-developing-football-talent",
+                icon: "fa-futbol",
+                color: "emerald",
+                featured: true
+            },
+            {
+                id: 2,
+                title: "KFUPM Masters & PhD Scholarships",
+                category: "petroleum",
+                country: "Saudi Arabia",
+                type: "Full Funding",
+                degree: "Masters/PhD",
+                deadline: "December 17, 2025",
+                description: "King Fahd University of Petroleum & Minerals offers full tuition, monthly stipend, free housing, medical coverage, and research funding.",
+                link: "https://www.kfupm.edu.sa",
+                icon: "fa-oil-well",
+                color: "blue",
+                featured: true
+            },
+            {
+                id: 3,
+                title: "KAUST Global Fellowship",
+                category: "petroleum",
+                country: "Saudi Arabia",
+                type: "Full Funding",
+                degree: "MS/PhD",
+                deadline: "January 1, 2026",
+                description: "King Abdullah University of Science & Technology. Full tuition, $20,000-$30,000 annual living allowance, on-campus housing, medical coverage.",
+                link: "https://www.kaust.edu.sa",
+                icon: "fa-atom",
+                color: "cyan",
+                featured: true
+            },
+            {
+                id: 4,
+                title: "Khalifa University Graduate Scholarships",
+                category: "petroleum",
+                country: "UAE",
+                type: "Full Funding",
+                degree: "Masters/PhD",
+                deadline: "Rolling",
+                description: "Includes Petroleum Engineering, Nuclear Engineering (UAE/Saudi nationals). Full tuition, stipend, teaching assistant opportunities.",
+                link: "https://www.ku.ac.ae",
+                icon: "fa-building-columns",
+                color: "purple",
+                featured: false
+            },
+            {
+                id: 5,
+                title: "ADNOC Accelerator Program Scholars",
+                category: "petroleum",
+                country: "UAE",
+                type: "Full Funding",
+                degree: "Undergraduate/Postgraduate",
+                deadline: "March 30, 2026",
+                description: "For UAE nationals. Covers Petroleum Engineering, Chemical Engineering, Mechanical Engineering. Tuition, living expenses, performance rewards.",
+                link: "https://jobs.adnoc.ae",
+                icon: "fa-gas-pump",
+                color: "orange",
+                featured: true
+            },
+            {
+                id: 6,
+                title: "Gulf United Female Soccer Scholarship",
+                category: "soccer",
+                country: "UAE",
+                type: "Partial Funding",
+                degree: "University Level",
+                deadline: "April 2025",
+                description: "First ever Female Soccer Scholarship Showcase in Dubai. Searching for talented female players for university scholarships.",
+                link: "https://gulfunitedfc.com",
+                icon: "fa-futbol",
+                color: "pink",
+                featured: false
+            },
+            {
+                id: 7,
+                title: "Abu Dhabi University Athletic Scholarship",
+                category: "soccer",
+                country: "UAE",
+                type: "25% Tuition Waiver",
+                degree: "Undergraduate",
+                deadline: "Rolling",
+                description: "For students demonstrating active participation in ADU sports teams. Minimum CGPA 2.75 required.",
+                link: "https://www.adu.ac.ae",
+                icon: "fa-running",
+                color: "emerald",
+                featured: false
+            },
+            {
+                id: 8,
+                title: "Hamad Bin Khalifa University Scholarship",
+                category: "petroleum",
+                country: "Qatar",
+                type: "Full Funding",
+                degree: "Masters/PhD",
+                deadline: "Rolling",
+                description: "Fully funded scholarships in Qatar. STEM focused programs including engineering disciplines.",
+                link: "https://www.hbku.edu.qa",
+                icon: "fa-graduation-cap",
+                color: "indigo",
+                featured: false
+            },
+            {
+                id: 9,
+                title: "ExxonMobil Middle East & North Africa Scholars",
+                category: "petroleum",
+                country: "Multiple",
+                type: "Full Funding",
+                degree: "Masters",
+                deadline: "Annual Cycle",
+                description: "For citizens of Algeria, Bahrain, Egypt, Iraq, Jordan, Kuwait, Lebanon, Libya, Morocco, Oman, Qatar, Saudi Arabia, Tunisia, UAE. Geoscience and Engineering focus.",
+                link: "https://www.iie.org",
+                icon: "fa-globe",
+                color: "red",
+                featured: true
+            },
+            {
+                id: 10,
+                title: "RWA Dubai Sports Scholarships",
+                category: "soccer",
+                country: "UAE",
+                type: "Partial to Full",
+                degree: "K-12/School Level",
+                deadline: "June 20, 2025",
+                description: "Innoventures Education sports program. International and Inter-Emirate level athletes eligible. Percentage discount on tuition fees.",
+                link: "https://www.rwadubai.com",
+                icon: "fa-trophy",
+                color: "yellow",
+                featured: false
+            },
+            {
+                id: 11,
+                title: "AUC Athletic Scholarships",
+                category: "soccer",
+                country: "Egypt",
+                type: "15% Tuition",
+                degree: "Undergraduate",
+                deadline: "December 23, 2025",
+                description: "American University in Cairo. For sports listed in Egyptian Championship Tournament and/or Olympic Games. High distinction required.",
+                link: "https://www.aucegypt.edu",
+                icon: "fa-medal",
+                color: "cyan",
+                featured: false
+            },
+            {
+                id: 12,
+                title: "King Abdulaziz University International Scholarships",
+                category: "both",
+                country: "Saudi Arabia",
+                type: "Full Funding",
+                degree: "Bachelors/Masters/PhD",
+                deadline: "Rolling",
+                description: "Comprehensive support including housing, health insurance, and academic guidance. Strong sports programs available.",
+                link: "https://kau.edu.sa",
+                icon: "fa-university",
+                color: "green",
+                featured: false
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderScholarships('all');
+            updateActiveCount();
+            
+            // Simulate real-time updates
+            setInterval(() => {
+                simulateNewScholarship();
+            }, 30000);
+        });
+
+        function renderScholarships(filter) {
+            const grid = document.getElementById('scholarshipGrid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' 
+                ? scholarships 
+                : scholarships.filter(s => s.category === filter || s.category === 'both');
+            
+            filtered.forEach((scholarship, index) => {
+                const card = createScholarshipCard(scholarship);
+                grid.appendChild(card);
+                
+                setTimeout(() => {
+                    card.classList.remove('opacity-0', 'translate-y-4');
+                }, index * 100);
+            });
+        }
+
+        function createScholarshipCard(s) {
+            const div = document.createElement('div');
+            div.className = `glass-card rounded-2xl p-6 opacity-0 translate-y-4 transition-all duration-500 relative overflow-hidden group ${s.featured ? 'border-2 border-' + s.color + '-400/50' : ''}`;
+            
+            const badgeColor = s.type.includes('Full') ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+            
+            div.innerHTML = `
+                ${s.featured ? `<div class="absolute top-0 right-0 bg-${s.color}-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl z-10">FEATURED</div>` : ''}
+                
+                <div class="flex items-start justify-between mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-${s.color}-500/20 flex items-center justify-center text-${s.color}-400 text-2xl">
+                        <i class="fas ${s.icon}"></i>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-xs font-medium border ${badgeColor}">
+                        ${s.type}
+                    </span>
+                </div>
+                
+                <h3 class="text-lg font-bold mb-2 line-clamp-2 group-hover:text-${s.color}-400 transition-colors">${s.title}</h3>
+                
+                <div class="flex items-center gap-2 text-sm text-gray-400 mb-3">
+                    <i class="fas fa-location-dot text-${s.color}-400"></i>
+                    <span>${s.country}</span>
+                    <span class="mx-2">•</span>
+                    <i class="fas fa-graduation-cap text-${s.color}-400"></i>
+                    <span>${s.degree}</span>
+                </div>
+                
+                <p class="text-sm text-gray-300 mb-4 line-clamp-3">${s.description}</p>
+                
+                <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                    <div class="text-xs text-gray-400">
+                        <i class="fas fa-clock mr-1"></i>
+                        Deadline: ${s.deadline}
+                    </div>
+                    <button onclick="trackScholarship(${s.id})" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-${s.color}-500/20 border border-white/10 hover:border-${s.color}-500/50 transition-all text-sm font-medium flex items-center gap-2 group/btn">
+                        <span>Track</span>
+                        <i class="fas fa-bell text-xs group-hover/btn:bell-ring"></i>
+                    </button>
+                </div>
+                
+                <a href="${s.link}" target="_blank" class="absolute inset-0 z-0" aria-label="View scholarship"></a>
+            `;
+            
+            return div;
+        }
+
+        function filterScholarships(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if(btn.dataset.filter === category) {
+                    btn.classList.add('bg-emerald-500', 'text-white', 'shadow-lg', 'shadow-emerald-500/25');
+                    btn.classList.remove('bg-white/5', 'border-white/10');
+                } else {
+                    btn.classList.remove('bg-emerald-500', 'text-white', 'shadow-lg', 'shadow-emerald-500/25');
+                    btn.classList.add('bg-white/5', 'border-white/10');
+                }
+            });
+            
+            renderScholarships(category);
+        }
+
+        function trackScholarship(id) {
+            const scholarship = scholarships.find(s => s.id === id);
+            showToast(`Now tracking: ${scholarship.title.substring(0, 30)}...`);
+            
+            const badge = document.getElementById('notifBadge');
+            const current = parseInt(badge.textContent) || 0;
+            badge.textContent = current + 1;
+            badge.classList.remove('hidden');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function updateActiveCount() {
+            const active = scholarships.filter(s => s.deadline.includes('2025') || s.deadline === 'Rolling' || s.deadline === 'Rolling Admissions').length;
+            document.getElementById('activeCount').textContent = active;
+        }
+
+        function simulateNewScholarship() {
+            if(Math.random() > 0.7) {
+                showToast("New scholarship detected: Qatar Foundation STEM Grant!");
+                const grid = document.getElementById('scholarshipGrid');
+                grid.firstElementChild?.classList.add('ring-2', 'ring-emerald-400', 'ring-offset-2', 'ring-offset-slate-900');
+                setTimeout(() => {
+                    grid.firstElementChild?.classList.remove('ring-2', 'ring-emerald-400', 'ring-offset-2', 'ring-offset-slate-900');
+                }, 3000);
+            }
+        }
+
+        document.getElementById('alertForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showToast('Alert system activated! You will receive notifications.');
+            e.target.reset();
+        });
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if(menu.classList.contains('translate-x-full')) {
+                menu.classList.remove('translate-x-full');
+            } else {
+                menu.classList.add('translate-x-full');
+            }
+        }
+
+        document.getElementById('notificationBtn').addEventListener('click', () => {
+            showToast('You have 3 new scholarship matches!');
+        });
+    </script>
+</body>
+</html>
